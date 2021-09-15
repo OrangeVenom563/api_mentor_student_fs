@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const Student = require("./student");
 
 //path for accessing file
 const p = path.join(
@@ -23,7 +24,7 @@ module.exports = class Mentor {
   constructor(id, name, exp) {
     this.id = id;
     this.name = name;
-    this.years_exp = exp
+    this.years_exp = exp;
   }
 
   //create new mentor
@@ -37,33 +38,31 @@ module.exports = class Mentor {
   }
 
   //removing student from existing mentor to add to new mentor
-  static removeStudent(mentId,stuId) {
+  static removeStudent(mentId, stuId) {
+    getMentorsFromFile((mentors) => {
+      const idx = mentors.findIndex((ment) => ment.id == mentId);
+      const stuRemoved = mentors[idx].students.filter((stu) => stu !== stuId);
+      mentors[idx].students = stuRemoved;
 
-    getMentorsFromFile(mentors => {
-    const idx = mentors.findIndex(ment => ment.id==mentId);
-    const stuRemoved = mentors[idx].students.filter(stu=> stu !== stuId)
-    mentors[idx].students = stuRemoved;
-    
-    fs.writeFile(p, JSON.stringify(mentors), (err) => {
+      fs.writeFile(p, JSON.stringify(mentors), (err) => {
         console.log(err);
       });
     });
-
   }
 
   //adding one or more students to a mentor
-  static addStudents(mentId,students) {
+  static addStudents(mentId, students) {
+    //adding mentor to list of students
+    Student.addMentor(mentId, students);
 
-    getMentorsFromFile(mentors => {
+    getMentorsFromFile((mentors) => {
+      const idx = mentors.findIndex((ment) => ment.id == mentId);
+      if (!mentors[idx].students) mentors[idx].students = [];
+      mentors[idx].students.push(...students);
 
-    const idx = mentors.findIndex(ment => ment.id==mentId);
-    if(!mentors[idx].students) mentors[idx].students=[];
-    mentors[idx].students.push(...students)
-    
-    fs.writeFile(p, JSON.stringify(mentors), (err) => {
+      fs.writeFile(p, JSON.stringify(mentors), (err) => {
         console.log(err);
       });
     });
-
   }
 };

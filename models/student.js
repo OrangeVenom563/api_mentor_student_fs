@@ -24,10 +24,28 @@ module.exports = class Student {
     this.batch = batch;
   }
 
+  //creates new student
   save() {
     getStudentsFromFile((students) => {
       students.push(this);
       fs.writeFile(p, JSON.stringify(students), (err) => {
+        console.log(err);
+      });
+    });
+  }
+
+  //assigns mentor to students
+  static addMentor(mentId,studsToAddMentor) {
+
+    getStudentsFromFile(students => {
+    const updatedStudents = students.map(stud=>
+      {
+        if(studsToAddMentor.indexOf(stud.id) != -1) stud.mentor = mentId 
+        return stud;
+      }
+    )
+    
+    fs.writeFile(p, JSON.stringify(updatedStudents), (err) => {
         console.log(err);
       });
     });
