@@ -1,11 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const studentController = require('../controller/student');
 
-router.get('/create-student',(req,res)=>{
-    console.log('creating student')
-    res.send("creating student")
-}
-);
+router.post('/create-student',studentController.postCreateStudent);
 
 router.get('/show-students',(req,res)=>{
     console.log('this students dont have mentor')
@@ -13,7 +10,7 @@ router.get('/show-students',(req,res)=>{
 }
 );
 
-router.get('/change-mentor/:stuId',(req,res)=>{
+router.post('/change-mentor/:stuId',(req,res)=>{
     const studentId = req.params.stuId;
     console.log(`changing mentor for student ${studentId}`)
     res.send(`changing mentor for student ${studentId}`)

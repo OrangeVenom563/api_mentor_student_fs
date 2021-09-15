@@ -1,13 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const mentorController = require('../controller/mentor');
 
-router.get('/create-mentor',(req,res)=>{
-    console.log('creating mentor')
-    res.send("creating mentor")
-}
-);
+router.post('/create-mentor',mentorController.postCreateMentor);
 
-router.get('/assign-students/:mentId',(req,res)=>{
+router.post('/assign-students/:mentId',(req,res)=>{
     const mentorId = req.params.mentId;
     console.log(`assigning student for mentor ${mentorId}`)
     res.send(`assigning student for mentor ${mentorId}`)
