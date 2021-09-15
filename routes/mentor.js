@@ -2,24 +2,14 @@ const express = require('express');
 const router = express.Router();
 const mentorController = require('../controller/mentor');
 
+//create a new mentor
 router.post('/create-mentor',mentorController.postCreateMentor);
 
-router.post('/remstu',mentorController.postRemoveStud);
+//remove a student from mentor to assign student to other mentor
+router.post('/remove-student',mentorController.postRemoveStudent);
 
-router.post('/addstu',mentorController.postAddStudents);
+//assign a student of multiple students to a mentor
+router.post('/add-student',mentorController.postAddStudents);
 
-router.post('/assign-students/:mentId',(req,res)=>{
-    const mentorId = req.params.mentId;
-    console.log(`assigning student for mentor ${mentorId}`)
-    res.send(`assigning student for mentor ${mentorId}`)
-}
-);
-
-router.get('/view-students/:mentId',(req,res)=>{
-    const mentorId = req.params.mentId;
-    console.log(`student of mentor ${mentorId}`)
-    res.send(`student of mentor ${mentorId}`)
-}
-);
 
 module.exports = router;

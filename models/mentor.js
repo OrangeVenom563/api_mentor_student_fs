@@ -1,6 +1,5 @@
 const fs = require("fs");
 const path = require("path");
-const Student = require("./student");
 
 //path for accessing file
 const p = path.join(
@@ -31,38 +30,42 @@ module.exports = class Mentor {
   save() {
     getMentorsFromFile((mentors) => {
       mentors.push(this);
-      fs.writeFile(p, JSON.stringify(mentors), (err) => {
-        console.log(err);
-      });
+      console.log(mentors);
+      fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)});
     });
   }
 
   //removing student from existing mentor to add to new mentor
   static removeStudent(mentId, stuId) {
-    getMentorsFromFile((mentors) => {
-      const idx = mentors.findIndex((ment) => ment.id == mentId);
+     getMentorsFromFile((mentors) => {
+      const idx = mentors.findIndex(ment => ment.id == mentId);
+      
+      if(idx==-1){
+        console.log("mentor not found cannot complete request")
+        return ;
+      }
       const stuRemoved = mentors[idx].students.filter((stu) => stu !== stuId);
       mentors[idx].students = stuRemoved;
-
-      fs.writeFile(p, JSON.stringify(mentors), (err) => {
-        console.log(err);
-      });
+      fs.writeFileSync(p, JSON.stringify(mentors), (err) => {console.log(err)}); 
     });
   }
 
   //adding one or more students to a mentor
   static addStudents(mentId, students) {
-    //adding mentor to list of students
-    Student.addMentor(mentId, students);
 
     getMentorsFromFile((mentors) => {
       const idx = mentors.findIndex((ment) => ment.id == mentId);
-      if (!mentors[idx].students) mentors[idx].students = [];
+
+      if(idx==-1){
+        console.log("mentor not found cannot complete request")
+        return ;
+      }
+      
+      if (!mentors[idx].students){ mentors[idx].students = []};
       mentors[idx].students.push(...students);
 
-      fs.writeFile(p, JSON.stringify(mentors), (err) => {
-        console.log(err);
-      });
+      fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)});
     });
+    
   }
 };

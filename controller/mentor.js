@@ -1,4 +1,7 @@
 const Mentor = require('../models/mentor')
+const Student = require('../models/student')
+
+//using models to perform operations 
 
 exports.postCreateMentor = (req, res) => {
     const id = req.body.mentId;
@@ -10,12 +13,17 @@ exports.postCreateMentor = (req, res) => {
     res.send(`created new mentor ${id}`);
   };
 
-  exports.postRemoveStud = (req,res)=>{
-      Mentor.removeStudent(req.body.mentId,req.body.stuId)
-      res.send('ok')
+  exports.postRemoveStudent = (req,res)=>{
+      const mentorId = req.body.mentId;
+      const studentId = req.body.stuId;
+      Mentor.removeStudent(mentorId,studentId)
+      res.send("removed")
   }
 
   exports.postAddStudents = (req,res)=>{
-      Mentor.addStudents(req.body.mentId,req.body.students)
-      res.send('hmmm okay')
+        const mentorId = req.body.mentId;
+        const students = req.body.students;
+        Mentor.addStudents(mentorId,students);
+        Student.addMentor(mentorId,students);
+        res.send('student added')
   }

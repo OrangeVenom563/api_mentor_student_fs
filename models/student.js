@@ -1,12 +1,14 @@
 const fs = require("fs");
 const path = require("path");
 
+//file path
 const p = path.join(
   path.dirname(process.mainModule.filename),
   "data",
   "students.json"
 );
 
+//reading from file
 const getStudentsFromFile = (cb) => {
   fs.readFile(p, (err, fileContent) => {
     if (err) {
@@ -28,15 +30,13 @@ module.exports = class Student {
   save() {
     getStudentsFromFile((students) => {
       students.push(this);
-      fs.writeFile(p, JSON.stringify(students), (err) => {
-        console.log(err);
-      });
+      fs.writeFile(p, JSON.stringify(students), (err) => console.log(err));
     });
   }
 
   //assigns mentor to students
   static addMentor(mentId,studsToAddMentor) {
-
+    console.log(mentId,studsToAddMentor)
     getStudentsFromFile(students => {
     const updatedStudents = students.map(stud=>
       {
@@ -44,10 +44,11 @@ module.exports = class Student {
         return stud;
       }
     )
-    
-    fs.writeFile(p, JSON.stringify(updatedStudents), (err) => {
-        console.log(err);
-      });
-    });
+    fs.writeFile(p, JSON.stringify(updatedStudents), (err) => console.log(err))
+  });
+  }
+
+  static getAll(cb){
+     getStudentsFromFile(cb)
   }
 };
