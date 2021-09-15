@@ -1,5 +1,6 @@
 const Student = require('../models/student')
 
+//create a new student
 exports.postCreateStudent = (req, res) => {
     const id = req.body.stuId;
     const name = req.body.stuName;

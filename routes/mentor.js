@@ -4,6 +4,10 @@ const mentorController = require('../controller/mentor');
 
 router.post('/create-mentor',mentorController.postCreateMentor);
 
+router.post('/remstu',mentorController.postRemoveStud);
+
+router.post('/addstu',mentorController.postAddStudents);
+
 router.post('/assign-students/:mentId',(req,res)=>{
     const mentorId = req.params.mentId;
     console.log(`assigning student for mentor ${mentorId}`)
