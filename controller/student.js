@@ -9,7 +9,7 @@ exports.postCreateStudent = (req, res) => {
    
     const student = new Student(id,name,batch);
     student.save();
-    res.send(`created student ${id}`);
+    res.json({message:`created student ${id}`});
   };
 
   //to get all students in file

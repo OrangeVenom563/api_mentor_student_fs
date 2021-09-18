@@ -10,7 +10,7 @@ exports.postCreateMentor = (req, res) => {
    
     const mentor = new Mentor(id,name,years_exp);
     mentor.save();
-    res.send(`created new mentor ${id}`);
+    res.json({message:`created new mentor ${id}`});
   };
 
   exports.postRemoveStudent = (req,res)=>{
@@ -26,4 +26,7 @@ exports.postCreateMentor = (req, res) => {
         Mentor.addStudents(mentorId,students);
         Student.addMentor(mentorId,students);
         res.send('student added')
+  }
+  exports.getAllMentors = (req,res)=>{
+    Mentor.getAll(mentors=> res.send(mentors))
   }

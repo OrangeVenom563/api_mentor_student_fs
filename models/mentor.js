@@ -66,6 +66,10 @@ module.exports = class Mentor {
 
       fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)});
     });
-    
   }
+  
+  //gets all the mentors
+  static getAll(cb){
+    getMentorsFromFile(cb)
+ }
 };
