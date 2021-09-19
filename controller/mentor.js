@@ -20,9 +20,7 @@ exports.postCreateMentor = (req, res) => {
 
       Mentor.removeStudent(mentorId,studentId)
       .then(result=>Student.removeMentor(studentId))
-      .then(result=>{
-        res.send({message:result})
-      })
+      .then(result=>res.send({message:result}))
       .catch(err=>console.log(err))
   }
 
