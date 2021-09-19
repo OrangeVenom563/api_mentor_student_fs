@@ -9,24 +9,34 @@ exports.postCreateMentor = (req, res) => {
     const years_exp = req.body.exp;
    
     const mentor = new Mentor(id,name,years_exp);
-    mentor.save();
-    res.json({message:`created new mentor ${id}`});
+    mentor.save()
+    .then(result=>res.json({message:result}))
+    .catch(result=>res.json({message:result}))
   };
 
   exports.postRemoveStudent = (req,res)=>{
       const mentorId = req.body.mentId;
       const studentId = req.body.stuId;
+
       Mentor.removeStudent(mentorId,studentId)
-      res.send("removed")
+      .then(result=>Student.removeMentor(studentId))
+      .then(result=>{
+        res.send({message:result})
+      })
+      .catch(err=>console.log(err))
   }
 
   exports.postAddStudents = (req,res)=>{
         const mentorId = req.body.mentId;
         const students = req.body.students;
-        Mentor.addStudents(mentorId,students);
-        Student.addMentor(mentorId,students);
-        res.send('student added')
+
+        Mentor.addStudents(mentorId,students)
+        .then(result=>console.log(result))
+        .then(result=>Student.addMentor(mentorId,students))
+        .then(response=>res.json({message:response}))
+        .catch(error=>res.send({message:error}))
   }
+  
   exports.getAllMentors = (req,res)=>{
     Mentor.getAll(mentors=> res.send(mentors))
   }

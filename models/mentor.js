@@ -3,7 +3,7 @@ const path = require("path");
 
 //path for accessing file
 const p = path.join(
-  path.dirname(process.mainModule.filename),
+  path.dirname(require.main.filename),
   "data",
   "mentors.json"
 );
@@ -27,45 +27,53 @@ module.exports = class Mentor {
   }
 
   //create new mentor
-  save() {
-    getMentorsFromFile((mentors) => {
-      mentors.push(this);
-      console.log(mentors);
-      fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)});
-    });
+  save = () => { 
+    return new Promise((resolve,reject)=>{
+      getMentorsFromFile((mentors) => {
+        const mentExist = mentors.find(ment=>ment.id===this.id)
+        if(mentExist){
+          reject("ID already exists");
+          return;
+        }
+        mentors.push(this);
+        fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)});
+          resolve("Created successfully")
+      });
+    })
   }
 
   //removing student from existing mentor to add to new mentor
   static removeStudent(mentId, stuId) {
-     getMentorsFromFile((mentors) => {
-      const idx = mentors.findIndex(ment => ment.id == mentId);
-      
-      if(idx==-1){
-        console.log("mentor not found cannot complete request")
-        return ;
-      }
-      const stuRemoved = mentors[idx].students.filter((stu) => stu !== stuId);
-      mentors[idx].students = stuRemoved;
-      fs.writeFileSync(p, JSON.stringify(mentors), (err) => {console.log(err)}); 
-    });
+    return new Promise((resolve,reject)=>{
+      getMentorsFromFile((mentors) => {
+        const idx = mentors.findIndex(ment => ment.id === mentId);
+        if(idx==-1){
+          reject(false)
+          return ;
+        }
+        const stuRemoved = mentors[idx].students.filter((stu) => stu !== stuId);
+        mentors[idx].students = stuRemoved;
+        fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)}); 
+        resolve(true)
+      });
+    })
   }
 
   //adding one or more students to a mentor
   static addStudents(mentId, students) {
-
-    getMentorsFromFile((mentors) => {
-      const idx = mentors.findIndex((ment) => ment.id == mentId);
-
-      if(idx==-1){
-        console.log("mentor not found cannot complete request")
-        return ;
-      }
-      
-      if (!mentors[idx].students){ mentors[idx].students = []};
-      mentors[idx].students.push(...students);
-
-      fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)});
-    });
+    return new Promise((resolve,reject)=>{
+      getMentorsFromFile((mentors) => {
+        const idx = mentors.findIndex((ment) => ment.id === mentId);
+        if(idx===-1){
+          reject("Mentor not found")
+          return ;
+        }
+        if (!mentors[idx].students){ mentors[idx].students = []};
+        mentors[idx].students.push(...students);
+        fs.writeFile(p, JSON.stringify(mentors), (err) => {console.log(err)});
+        resolve("Added successfully")
+      });
+    })
   }
   
   //gets all the mentors

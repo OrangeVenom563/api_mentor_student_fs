@@ -3,7 +3,7 @@ const path = require("path");
 
 //file path
 const p = path.join(
-  path.dirname(process.mainModule.filename),
+  path.dirname(require.main.filename),
   "data",
   "students.json"
 );
@@ -28,27 +28,52 @@ module.exports = class Student {
 
   //creates new student
   save() {
-    getStudentsFromFile((students) => {
-      students.push(this);
-      fs.writeFile(p, JSON.stringify(students), (err) => console.log(err));
+      return new Promise((resolve, reject) => {
+        getStudentsFromFile((students) => {
+        const studExists = students.find((stud) => stud.id === this.id);
+        if (studExists) {
+          reject("Student already exist with given ID");
+          return;
+        }
+        students.push(this);
+        fs.writeFile(p, JSON.stringify(students), (err) => console.log(err));
+        resolve("Added student successfully");
+      });
     });
   }
 
   //assigns mentor to students
-  static addMentor(mentId,studsToAddMentor) {
-    console.log(mentId,studsToAddMentor)
-    getStudentsFromFile(students => {
-    const updatedStudents = students.map(stud=>
-      {
-        if(studsToAddMentor.indexOf(stud.id) != -1) stud.mentor = mentId 
-        return stud;
-      }
-    )
-    fs.writeFile(p, JSON.stringify(updatedStudents), (err) => console.log(err))
-  });
+  static addMentor = (mentId, studsToAddMentor) => {
+    return new Promise((resolve,reject)=>{
+      getStudentsFromFile((students) => {
+        const updatedStudents = students.map((stud) => {
+          if (studsToAddMentor.indexOf(stud.id) != -1) stud.mentor = mentId;
+          return stud;
+        });
+        fs.writeFile(p, JSON.stringify(updatedStudents), (err) =>
+          console.log(err)
+        );
+        resolve("Added Mentor to students")
+      })
+    })
+  };
+
+  static removeMentor = (studentId) =>{
+    return new Promise((resolve,reject)=>{
+      getStudentsFromFile((students)=>{
+        const updatedStudents = students.map((stud)=>{
+          if(stud.id==studentId) delete stud.mentor;
+          return stud
+        })
+        fs.writeFile(p, JSON.stringify(updatedStudents), (err) =>
+        console.log(err)
+      );
+      resolve("Removed Mentor")
+      })
+    })
   }
 
-  static getAll(cb){
-     getStudentsFromFile(cb)
+  static getAll(cb) {
+    getStudentsFromFile(cb);
   }
 };
